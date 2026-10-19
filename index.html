@@ -151,6 +151,28 @@
     .blocks-back{min-height:44px;max-width:100%;padding:10px 16px;background:#30288755;color:var(--ink);border:1px solid var(--line);border-radius:10px;font-size:12px}.blocks-timer-badge{color:var(--accent);font-size:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;width:fit-content}
     .game-view .shell{max-width:1040px}.game-view footer{display:none}.game-view main{padding-top:22px}.game-view .play-blocks{margin-top:0}.game-view .blocks-layout{grid-template-columns:minmax(0,340px) minmax(0,260px);gap:40px}
     @media(max-width:600px){.blocks-launch-card{flex-direction:column;align-items:stretch;gap:18px;padding:18px}.blocks-launch-card .save-times{width:100%}.blocks-header{flex-direction:column;gap:12px}.blocks-back{align-self:flex-start}.game-view .blocks-layout{grid-template-columns:minmax(0,1fr);gap:20px}.game-view .blocks-layout>div:first-child{width:min(100%,260px)}.game-view main{padding-top:16px}}
+
+    /* Keep the touch controls next to the falling pieces, before scores/actions. */
+    .blocks-playfield .blocks-touch{margin-top:10px}
+    @media(max-width:600px){
+      .game-view .shell>header{display:none}
+      .game-view .shell{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+      .game-view main{padding-top:0}.game-view .play-blocks{padding:12px}
+      .game-view .blocks-header{flex-direction:row;align-items:center;gap:10px}
+      .game-view .blocks-header h2{font-size:18px;line-height:1.3}.game-view .blocks-header p{display:none}
+      .game-view .blocks-back{font-size:11px;padding:8px 10px;max-width:145px}
+      .game-view .blocks-timer-badge{margin:10px 0;font-size:11px;padding:7px 10px}
+      .game-view #blocks-status,.game-view .blocks-instructions{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%)}
+      .game-view .blocks-layout{margin-top:10px;gap:16px}
+      .game-view .blocks-layout>.blocks-playfield{width:min(100%,280px)}
+      .game-view .blocks-board{width:min(100%,280px,max(140px,calc((100svh - 260px)/2)));margin-inline:auto}
+      .blocks-playfield .blocks-touch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
+      .blocks-playfield .blocks-touch>div{display:contents}
+      .blocks-playfield .blocks-touch button{min-width:0;min-height:44px;padding:8px 4px;margin:0;font-size:18px;width:100%}
+      .blocks-touch [data-block-action="left"]{order:1}.blocks-touch [data-block-action="rotate"]{order:2}.blocks-touch [data-block-action="right"]{order:3}.blocks-touch [data-block-action="down"]{order:4}
+      .blocks-playfield .blocks-touch [data-block-action="drop"]{order:5;grid-column:1/-1;font-size:12px;margin:0}
+      .blocks-side{display:flex;flex-direction:column}.blocks-side>.primary{order:0}.blocks-side>.blocks-message{order:1}.blocks-side>.blocks-stats{order:2;margin-bottom:0}.blocks-side>.save-times{order:3}
+    }
   </style>
 </head>
 <body>
@@ -234,10 +256,10 @@
         <div class="blocks-header"><div><h2 id="blocks-title" data-i18n="blocksTitle">Tu partida de bloques</h2><p data-i18n="blocksIntro">Encaja piezas y completa filas. Un pequeño juego para tu descanso.</p></div><button type="button" id="blocks-timer-link" class="blocks-back" data-i18n="blocksBack">Volver al temporizador</button></div>
         <p class="blocks-timer-badge" id="blocks-timer-badge"></p>
         <p id="blocks-status" role="status" aria-live="polite"></p>
-        <div class="blocks-layout"><div><div id="blocks-board" class="blocks-board" tabindex="0" role="img" aria-labelledby="blocks-title" aria-describedby="blocks-instructions"></div><p id="blocks-instructions" class="blocks-instructions" data-i18n="blocksKeys">← → mover · ↑ girar · ↓ bajar · Espacio: soltar · P: pausa</p></div>
+        <div class="blocks-layout"><div class="blocks-playfield"><div id="blocks-board" class="blocks-board" tabindex="0" role="img" aria-labelledby="blocks-title" aria-describedby="blocks-instructions"></div><div class="blocks-touch"><button type="button" data-block-action="rotate" data-i18n-aria="blocksRotate">↻</button><div><button type="button" data-block-action="left" data-i18n-aria="blocksLeft">←</button><button type="button" data-block-action="down" data-i18n-aria="blocksDown">↓</button><button type="button" data-block-action="right" data-i18n-aria="blocksRight">→</button></div><button type="button" data-block-action="drop" data-i18n="blocksDrop">Soltar pieza</button></div><p id="blocks-instructions" class="blocks-instructions" data-i18n="blocksKeys">← → mover · ↑ girar · ↓ bajar · Espacio: soltar · P: pausa</p></div>
         <div class="blocks-side"><div class="blocks-stats"><div><span data-i18n="blocksScore">Puntos</span><strong id="blocks-score">0</strong></div><div><span data-i18n="blocksLines">Filas</span><strong id="blocks-lines">0</strong></div><div><span data-i18n="blocksLevel">Nivel</span><strong id="blocks-level">1</strong></div><div><span data-i18n="blocksBest">Récord</span><strong id="blocks-best">0</strong></div></div>
         <button id="blocks-toggle" type="button" class="primary">Jugar</button><button id="blocks-restart" type="button" class="save-times" data-i18n="blocksRestart">Nueva partida</button>
-        <div class="blocks-touch"><button type="button" data-block-action="rotate" data-i18n-aria="blocksRotate">↻</button><div><button type="button" data-block-action="left" data-i18n-aria="blocksLeft">←</button><button type="button" data-block-action="down" data-i18n-aria="blocksDown">↓</button><button type="button" data-block-action="right" data-i18n-aria="blocksRight">→</button></div><button type="button" data-block-action="drop" data-i18n="blocksDrop">Soltar pieza</button></div>
+
         <p id="blocks-message" class="blocks-message" role="status" aria-live="polite"></p></div></div>
       </section>
     </main>
