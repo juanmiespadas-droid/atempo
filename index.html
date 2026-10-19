@@ -232,7 +232,7 @@
             <p id="time-feedback" class="time-feedback" role="status" aria-live="polite"></p>
           </form>
           <label class="sound"><input id="sound" type="checkbox" checked><span data-i18n="sound">Sonidos de inicio y final</span></label>
-          <p class="time-hint" data-i18n="soundHint">Un beep al iniciar o reanudar y tres avisos al finalizar. La prueba reproduce el sonido una sola vez.</p>
+          <p class="time-hint" data-i18n="soundHint">Un beep al iniciar o reanudar. Un aviso al terminar el enfoque y tres al terminar los descansos. La prueba reproduce el sonido una vez.</p>
           <button type="button" id="choose-sound" class="choose-sound" aria-expanded="false" aria-controls="sound-options"><span data-i18n="chooseSound">Elegir sonido</span><span id="selected-sound" class="selected-sound">Campanillas</span><span aria-hidden="true">⌄</span></button>
           <div id="sound-options" class="sound-options" hidden>
             <label for="sound-type" data-i18n="soundType">Sonido de finalización</label>
@@ -360,7 +360,7 @@
       "Digital suave"
     ],
     "audioError": "No se ha podido reproducir el sonido. Comprueba que tu navegador permita el audio.",
-    "soundHint": "Un beep al iniciar o reanudar y tres avisos al finalizar. La prueba reproduce el sonido una sola vez.",
+    "soundHint": "Un beep al iniciar o reanudar. Un aviso al terminar el enfoque y tres al terminar los descansos. La prueba reproduce el sonido una vez.",
     "transitionLabel": "Preparación entre fases (segundos)",
     "transitionHint": "De 5 a 60 segundos. Se aplica a partir del próximo cambio de fase.",
     "invalidTransition": "Introduce segundos enteros entre 5 y 60.",
@@ -488,7 +488,7 @@
       "Avís digital suau"
     ],
     "audioError": "No s’ha pogut reproduir el so. Comprova que el navegador permeti l’àudio.",
-    "soundHint": "Un bip en començar o reprendre i tres avisos en acabar. La prova reprodueix el so una sola vegada.",
+    "soundHint": "Un bip en començar o reprendre. Un avís en acabar la concentració i tres en acabar les pauses. La prova reprodueix el so una vegada.",
     "transitionLabel": "Preparació entre fases (segons)",
     "transitionHint": "De 5 a 60 segons. S’aplica a partir del proper canvi de fase.",
     "invalidTransition": "Introdueix segons enters entre 5 i 60.",
@@ -616,7 +616,7 @@
       "Aviso dixital suave"
     ],
     "audioError": "Non se puido reproducir o son. Comproba que o navegador permita o audio.",
-    "soundHint": "Un bip ao comezar ou continuar e tres avisos ao rematar. A proba reproduce o son unha soa vez.",
+    "soundHint": "Un bip ao comezar ou continuar. Un aviso ao rematar a concentración e tres ao rematar as pausas. A proba reproduce o son unha vez.",
     "transitionLabel": "Preparación entre fases (segundos)",
     "transitionHint": "De 5 a 60 segundos. Aplícase a partir do seguinte cambio de fase.",
     "invalidTransition": "Introduce segundos enteiros entre 5 e 60.",
@@ -744,7 +744,7 @@
       "Abisu digital leuna"
     ],
     "audioError": "Ezin izan da soinua erreproduzitu. Egiaztatu nabigatzaileak audioa onartzen duela.",
-    "soundHint": "Bip bat hastean edo jarraitzean, eta hiru abisu amaitzean. Probak soinua behin erreproduzitzen du.",
+    "soundHint": "Bip bat hastean edo jarraitzean. Abisu bat lanaldia amaitzean eta hiru atsedenaldiak amaitzean. Probak soinua behin erreproduzitzen du.",
     "transitionLabel": "Faseen arteko prestaketa (segundoak)",
     "transitionHint": "5 eta 60 segundo artean. Hurrengo fase-aldaketan aplikatuko da.",
     "invalidTransition": "Sartu 5 eta 60 arteko segundo osoak.",
@@ -872,7 +872,7 @@
       "Soft digital"
     ],
     "audioError": "The sound could not play. Check that your browser allows audio.",
-    "soundHint": "A beep when you start or resume, and three alerts when time is up. Preview plays the sound once.",
+    "soundHint": "A beep when you start or resume. One alert after focus and three after breaks. Preview plays the sound once.",
     "transitionLabel": "Time to prepare between phases (seconds)",
     "transitionHint": "5–60 seconds. Applies from the next phase change.",
     "invalidTransition": "Enter whole seconds from 5 to 60.",
@@ -1000,7 +1000,7 @@
       "やさしい電子音"
     ],
     "audioError": "音を再生できませんでした。ブラウザで音声の再生が許可されているか確認してください。",
-    "soundHint": "開始・再開時に短いビープ音が鳴り、終了時には選んだ音が3回鳴ります。試聴では1回だけ再生します。",
+    "soundHint": "開始・再開時に短いビープ音が鳴ります。集中の終了時は1回、休憩の終了時は3回お知らせします。試聴は1回です。",
     "transitionLabel": "切り替えの準備時間（秒）",
     "transitionHint": "5〜60秒で設定できます。次の切り替えから適用されます。",
     "invalidTransition": "5〜60の整数を入力してください。",
@@ -1221,7 +1221,7 @@
       oscillator.onended = () => { activeTones.delete(oscillator); oscillator.disconnect(); gain.disconnect(); };
       oscillator.start(at); oscillator.stop(at + duration + .02);
     }
-    async function chime(preview = false) {
+    async function chime(preview = false, repeatCount = 3) {
       if (!preview && !$('sound').checked) return;
       const request = ++playbackRequest;
       const ready = await prepareAudio(preview);
@@ -1233,7 +1233,7 @@
       try {
         // Schedule all repetitions on the audio clock, with a gap and no overlap.
         const length = { chimes: 1.21, bowl: 2.8, drops: .96, digital: .82 }[selectedSound];
-        const repetitions = preview ? 1 : 3;
+        const repetitions = preview ? 1 : repeatCount;
         for (let repetition = 0; repetition < repetitions; repetition++) {
           const offset = repetition * (length + .4);
           switch (selectedSound) {
@@ -1313,7 +1313,7 @@
       if (preparing) { beginPreparedPhase(); return; }
       if (sessionFinished) return;
       running = false;
-      if (finished) chime(); else { playbackRequest++; stopTones(); }
+      if (finished) chime(false, phase === 'focus' ? 1 : 3); else { playbackRequest++; stopTones(); }
       if (phase === 'long') {
         remaining = 0; preparing = false; sessionFinished = true;
         announcement = { kind: 'sessionDone' };
