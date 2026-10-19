@@ -198,6 +198,22 @@
     @media(hover:hover){.menu-panel>a:hover,.mode:hover,.mode.active:hover,.save-times:hover,.choose-sound:hover,.blocks-touch button:not(:disabled):hover{background:var(--active);color:var(--ink);border-color:var(--accent)}}
     @media(max-width:600px){.app-header{flex-wrap:wrap;align-items:flex-start;gap:16px}.brand-stack{width:100%}.header-actions{width:100%;justify-content:flex-end;gap:8px}.header-actions>.language-control{padding-inline:8px}.header-actions .language-control select{width:104px}.theme-toggle{padding:9px 11px}.menu-panel{width:min(290px,calc(100vw - 32px))}}
     @media(max-width:360px){.header-actions{gap:6px}.header-actions .language-control select{width:96px}.header-actions>.language-control{padding-inline:6px;gap:5px}.theme-toggle{padding-inline:9px}}
+
+    /* Keep the wordmark and its tagline in one proportional responsive unit. */
+    .app-header .brand-stack{container-type:inline-size;width:clamp(172px,18vw,204px);max-width:100%;flex-shrink:0;align-items:stretch;gap:7px}
+    .app-header .app-brand{width:100%;padding:6px 8px;box-sizing:border-box;justify-content:center}
+    .app-header .app-logo-full{display:block;width:100%;height:auto;aspect-ratio:1470/370}
+    .app-header .app-logo-icon{display:none}
+    .app-header .brand-tagline{width:100%;margin:0;text-align:center;font-size:12px;font-size:clamp(11px,7.1cqi,14px);line-height:1.45;letter-spacing:0;text-wrap:balance;overflow-wrap:break-word}
+    @media(max-width:600px){
+      .app-header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;padding-bottom:16px}
+      .app-header .brand-stack{width:clamp(172px,48vw,204px);margin:0;gap:6px}
+      .app-header .app-brand{padding:5px 7px;border-radius:9px}
+      .app-header .header-actions{flex:0 0 100%;width:100%;margin-left:0;justify-content:space-between;align-items:center;gap:8px}
+      .app-header .theme-toggle,.app-header .menu-toggle{min-height:44px;height:44px}
+      .app-header .menu-toggle{width:44px}.app-header .language-control{min-height:44px}
+      .app-header .language-control select{min-height:42px}.app-header .menu-panel{top:53px}
+    }
   </style>
 </head>
 <body>
